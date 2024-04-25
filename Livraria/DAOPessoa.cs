@@ -28,7 +28,7 @@ namespace Livraria
         //Construtor
         public DAOPessoa()
         {
-            conexao = new MySqlConnection("server=localhost;DataBase=livrariaTI20N;Uid=root;Password=");
+            conexao = new MySqlConnection("server=localhost;DataBase=BibliotecaTI20N;Uid=root;Password=;Convert Zero DateTime=True");
             try
             {
                 conexao.Open();//Abrir a conexão
@@ -47,8 +47,13 @@ namespace Livraria
         {
             try
             {
+                MySqlParameter parameter = new MySqlParameter();
+                parameter.ParameterName = "@Date";
+                parameter.MySqlDbType = MySqlDbType.Date;
+                parameter.Value = dtNascimento.Year + "-" + dtNascimento.Month + "-" + dtNascimento.Day;
+
                 //Declarei as variáveis e preparei o comando
-                dados = $"('{CPF}','{nome}','{telefone}','{endereco}','{dtNascimento}','{login}'," +
+                dados = $"('{CPF}','{nome}','{telefone}','{endereco}','{parameter.Value}','{login}'," +
                         $"'{senha}','{situacao}','{posicao}')";
                 comando = $"Insert into pessoa values {dados}";
                 //Engatilhar a inserção do banco
@@ -105,7 +110,14 @@ namespace Livraria
                 nome[i] = leitura["nome"] + "";
                 telefone[i] = leitura["telefone"] + "";
                 endereco[i] = leitura["endereco"] + "";
-                dtNascimento[i] = Convert.ToDateTime(leitura["dtNascimento"]);
+                MySqlParameter parameter = new MySqlParameter();
+                parameter.ParameterName = "@Date";
+                parameter.MySqlDbType = MySqlDbType.Date;
+                parameter.Value = Convert.ToDateTime(leitura["dtNascimento"]).Day + "/" +
+                                  Convert.ToDateTime(leitura["dtNascimento"]).Month + "/" +
+                                  Convert.ToDateTime(leitura["dtNascimento"]).Year;
+                dtNascimento[i] = Convert.ToDateTime(parameter.Value);
+
                 login[i] = leitura["login"] + "";
                 senha[i] = leitura["senha"] + "";
                 situacao[i] = leitura["situacao"] + "";
@@ -135,6 +147,101 @@ namespace Livraria
 
             return msg;
         }//fim do método
+
+        public string ConsultarIndividual(long codCPF) 
+        {
+
+            PreencherVetor();
+            for(i=0; i < contador; i++) 
+            { 
+            
+                if(CPF[i] == codCPF) 
+                {
+
+                    msg = "CPF: " + CPF[i]                     +
+                          ", nome: " + nome[i]                 +
+                          ", telefone: " + telefone[i]         +
+                          ", endereco: " + endereco[i]         +
+                          ", nascimento: " + dtNascimento[i] + 
+                          ", login: " + login[i]               +
+                          ", senha: " + senha[i]               +
+                          ", situacao: " + situacao            +
+                          ", cargo: " + posicao[i];
+                    return msg;
+                }//Fim do If
+                      
+            }//Fim do For
+            return "Código informado não é válido!";
+  
+        }//Fim do Consultar
+
+        public string Atualizar(long codCPF, string campo, string novoDado)
+        {
+            try 
+            {
+
+                string query = "update pessoa set " + campo + " = '" + novoDado + "' where CPF = '" + codCPF + "'";
+                //Executar
+                MySqlCommand sql = new MySqlCommand(query, conexao);
+                string  resultado = "" + sql.ExecuteNonQuery();
+                return resultado + "linha afetada!";
+            }
+            catch (Exception ex) 
+            {
+
+                return "Algo deu errado!\n\n\n" + ex;
+            
+            
+            }
+        
+        
+        }
+
+        public string Atualizar(long codCPF, string campo, DateTime novoDado)
+        {
+            try
+            {
+
+                string query = "update pessoa set " + campo + " = '" + novoDado + "' where CPF = '" + codCPF + "'";
+                //Executar
+                MySqlCommand sql = new MySqlCommand(query, conexao);
+                string resultado = "" + sql.ExecuteNonQuery();
+                return resultado + "linha afetada!";
+            }
+            catch (Exception ex)
+            {
+
+                return "Algo deu errado!\n\n\n" + ex;
+
+
+            }
+
+
+        }
+
+        public string Excluir(long codCPF)
+        {
+            try
+            {
+
+                string query = "update pessoa set situacao = 'Inativo' where CPF = '" + codCPF + "'";
+                //Executar
+                MySqlCommand sql = new MySqlCommand(query, conexao);
+                string resultado = "" + sql.ExecuteNonQuery();
+                return resultado + "linha afetada!";
+            }
+            catch (Exception ex)
+            {
+
+                return "Algo deu errado!\n\n\n" + ex;
+
+
+            }
+
+
+        }
+
+
 
 
 
