@@ -162,7 +162,7 @@ namespace Livraria
                           ", nome: " + nome[i]                 +
                           ", telefone: " + telefone[i]         +
                           ", endereco: " + endereco[i]         +
-                          ", nascimento: " + dtNascimento[i] + 
+                          ", nascimento: " + dtNascimento[i]   + 
                           ", login: " + login[i]               +
                           ", senha: " + senha[i]               +
                           ", situacao: " + situacao            +
