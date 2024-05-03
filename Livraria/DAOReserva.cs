@@ -7,28 +7,21 @@ using System.Threading.Tasks;
 using MySql.Data;
 using Mysqlx;
 
-
 namespace Livraria
 {
-    class DAOLivro
+    class DAOReserva
     {
 
         public MySqlConnection conexao;
         public string dados;
         public string comando;
         public long[] codigo;
-        public string[] titulo;
-        public string[] autor;
-        public string[] editora;
-        public string[] genero;
-        public long[] ISBN;
-        public string[] quantidade;
-        public string[] preco;
-        public int i;
-        public int contador;
-        public string msg;
+        public string codLivro;
+        public string codPessoa;
+        public string quantidade;
+        public string disponibilidade;
         //Construtor
-        public DAOLivro()
+        public DAOReserva()
         {
             conexao = new MySqlConnection("server=localhost;DataBase=BibliotecaTI20N;Uid=root;Password=;Convert Zero DateTime=True");
             try
@@ -43,17 +36,14 @@ namespace Livraria
             }
         }//fim do construtor
 
-        public void Inserir(long codigo, string titulo, string autor, string editora,
-                           string genero, long ISBN,
-                           string quantidade, string preco)
+        public void Inserir(long codigo, string codLivro, string codPessoa, string quantidade, string disponibilidade)
         {
             try
             {
-                
+
 
                 //Declarei as variáveis e preparei o comando
-                dados = $"('{codigo}','{titulo}','{autor}','{editora}','{genero}','{ISBN}'," +
-                        $"'{quantidade}','{preco}')";
+                dados = $"('{codigo}','{codPessoa}','{codLivro}','{quantidade}','{disponibilidade}','{quantidade}')";
                 comando = $"Insert into pessoa values {dados}";
                 //Engatilhar a inserção do banco
                 MySqlCommand sql = new MySqlCommand(comando, conexao);
@@ -73,8 +63,8 @@ namespace Livraria
 
             //Instanciar
             codigo = new long[100];
-            titulo = new string[100];
-            autor = new string[100];
+            codPessoa = new string[100];
+            codLivro = new string[100];
             editora = new string[100];
             genero = new string[100];
             ISBN = new long[100];
@@ -227,6 +217,9 @@ namespace Livraria
 
 
         }
+
+
+
 
     }
 }
